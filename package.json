@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@material-ui/core": "^4.12.4",
+    "ipfs-http-client": "^59.0.0"
+  }
+}
