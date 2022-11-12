@@ -5,7 +5,7 @@ import { Box, Chip, IconButton, Typography } from '@mui/material'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import useAlert from '../../contexts/AlertContext/useAlert'
 
-const AddRecordModal = ({ handleClose, handleUpload, userAddress }) => {
+const UpdateBillModal = ({ handleClose, handleUpload, userAddress }) => {
   const { setAlert } = useAlert()
   const [file, setFile] = useState(null)
   const [buffer, setBuffer] = useState(null)
@@ -37,8 +37,8 @@ const AddRecordModal = ({ handleClose, handleUpload, userAddress }) => {
       <Box
         width='50vw'
         style={{
-          backgroundColor: 'white',
-          boxShadow: 24,
+          backgroundColor: 'darkgrey',
+          boxShadow: 1,
           borderRadius: 10,
         }}
         p={2}
@@ -52,7 +52,7 @@ const AddRecordModal = ({ handleClose, handleUpload, userAddress }) => {
           </IconButton>
         </Box>
         <Box display='flex' flexDirection='column' my={1}>
-          <Typography variant='h4'>Add Record</Typography>
+          <Typography variant='h4'>Upload Bill</Typography>
           <Box my={2}>
             <DropzoneAreaBase
               onAdd={fileObjs => handleFileChange(fileObjs[0])}
@@ -78,4 +78,4 @@ const AddRecordModal = ({ handleClose, handleUpload, userAddress }) => {
   )
 }
 
-export default AddRecordModal
+export default UpdateBillModal

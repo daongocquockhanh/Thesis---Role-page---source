@@ -6,10 +6,12 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import useEth from '../../contexts/EthContext/useEth'
 import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded'
 import useAlert from '../../contexts/AlertContext/useAlert'
-import AddRecordModal from './AddRecordModal'
+import UpdateBillModal from './UpdateBillModal'
 import CloudUploadRoundedIcon from '@mui/icons-material/CloudUploadRounded'
 import ipfs from '../../ipfs'
 import Record from '../../components/Record'
+import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
+import FmdGoodIcon from '@mui/icons-material/FmdGood';
 
 const Admin = () => {
   const {
@@ -106,7 +108,7 @@ const Admin = () => {
               {role === 'admin' && (
                 <>
                   <Modal open={addRecord} onClose={() => setAddRecord(false)}>
-                    <AddRecordModal
+                    <UpdateBillModal
                       handleClose={() => setAddRecord(false)}
                       handleUpload={addRecordCallback}
                       userAddress={searchUserAddress}
@@ -180,6 +182,19 @@ const Admin = () => {
               )}
             </>
           )}
+          <Box mt={6} mb={4}>
+            <Divider />
+          </Box>
+
+          <Typography variant='h4'>Go to Social page</Typography>
+          <Typography variant='h6'>This page will stage all users comment about the service</Typography>
+            <FormControl fullWidth>
+
+                <CustomButton text = "Go to Social page" link ="https://krypty-daongocquockhanh.vercel.app" >
+                    <FmdGoodIcon style={{ color: 'white' }} />
+                </CustomButton>
+
+            </FormControl>
         </Box>
       </Box>
     )
