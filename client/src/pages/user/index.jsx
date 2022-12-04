@@ -79,7 +79,7 @@ const User = () => {
                           <Typography variant='h5'>Block:           6888970</Typography>
                         </Box>
                         <Box display='flex' alignItems='left' justifyContent='left' my={5}>
-                          <Typography variant='h5'>Time stamp:      179 days 20 hrs ago (May-15-2022 01:02:04 PM +UTC)</Typography>
+                          <Typography variant='h5'>Time stamp:      17 days 20 hrs ago (May-15-2022 01:02:04 PM +UTC)</Typography>
                         </Box>
 
 
