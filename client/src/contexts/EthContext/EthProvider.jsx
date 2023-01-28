@@ -2,7 +2,7 @@ import React, { useReducer, useCallback, useEffect } from 'react'
 import Web3 from 'web3'
 import EthContext from './EthContext'
 import { reducer, actions, initialState } from './state'
-import artifact from "../../contracts/EHR.json";
+import artifact from "../../contracts/Payment.json";
 
 function EthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -35,7 +35,7 @@ function EthProvider({ children }) {
   useEffect(() => {
     const tryInit = async () => {
       try {
-        const artifact = require('../../contracts/EHR.json')
+        const artifact = require('../../contracts/Payment.json')
         init(artifact)
       } catch (err) {
         console.error(err)

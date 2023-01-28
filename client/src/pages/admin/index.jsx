@@ -72,7 +72,7 @@ const Admin = () => {
           setRecords(records)
         }
       } catch (err) {
-        setAlert('Record upload failed', 'error')
+        setAlert('Bill upload failed', 'error')
         console.error(err)
       }
     },
@@ -140,7 +140,7 @@ const Admin = () => {
 
                   {userExist && records.length === 0 && (
                     <Box display='flex' alignItems='center' justifyContent='center' my={5}>
-                      <Typography variant='h5'>No records found</Typography>
+                      <Typography variant='h5'>The account has no bill yet</Typography>
                     </Box>
                   )}
 
