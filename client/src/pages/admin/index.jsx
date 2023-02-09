@@ -10,6 +10,7 @@ import UpdateBillModal from './UpdateBillModal'
 import CloudUploadRoundedIcon from '@mui/icons-material/CloudUploadRounded'
 import ipfs from '../../ipfs'
 import Record from '../../components/Record'
+import Bill from '../../components/Bill'
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 
@@ -23,8 +24,8 @@ const Admin = () => {
   const [searchUserAddress, setSearchUserAddress] = useState('')
   const [addUserAddress, setAddUserAddress] = useState('')
   const [addUserName, setAddUserName] = useState('')
-  const [records, setRecords] = useState([])
-  const [addRecord, setAddRecord] = useState(false)
+  const [bills, setBills] = useState([])
+  const [addBill, setAddBill] = useState(false)
 
   const searchUser = async () => {
     try {
@@ -34,9 +35,9 @@ const Admin = () => {
       }
       const userExists = await contract.methods.getUserExists(searchUserAddress).call({ from: accounts[0] })
       if (userExists) {
-        const records = await contract.methods.getRecords(searchUserAddress).call({ from: accounts[0] })
-        console.log('records :>> ', records)
-        setRecords(records)
+        const bills = await contract.methods.getBills(searchUserAddress).call({ from: accounts[0] })
+        console.log('bills :>> ', bills)
+        setBills(bills)
         setUserExist(true)
       } else {
         setAlert('User not found', 'error')
@@ -53,7 +54,7 @@ const Admin = () => {
       console.error(err)
     }
   }
-  const addRecordCallback = useCallback(
+  const addBillCallback = useCallback(
     async (buffer, fileName, userAddress) => {
       if (!userAddress) {
         setAlert('No user entered', 'error')
@@ -63,13 +64,13 @@ const Admin = () => {
         const res = await ipfs.add(buffer)
         const ipfsHash = res[0].hash
         if (ipfsHash) {
-          await contract.methods.addRecord(ipfsHash, fileName, userAddress).send({ from: accounts[0] })
+          await contract.methods.addBill(ipfsHash, fileName, userAddress).send({ from: accounts[0] })
           setAlert('New bill uploaded', 'success')
-          setAddRecord(false)
+          setAddBill(false)
 
           // refresh records
-          const records = await contract.methods.getRecords(userAddress).call({ from: accounts[0] })
-          setRecords(records)
+          const bills = await contract.methods.getBills(userAddress).call({ from: accounts[0] })
+          setBills(bills)
         }
       } catch (err) {
         setAlert('Bill upload failed', 'error')
@@ -107,15 +108,15 @@ const Admin = () => {
               )}
               {role === 'admin' && (
                 <>
-                  <Modal open={addRecord} onClose={() => setAddRecord(false)}>
+                  <Modal open={addBill} onClose={() => setAddBill(false)}>
                     <UpdateBillModal
-                      handleClose={() => setAddRecord(false)}
-                      handleUpload={addRecordCallback}
+                      handleClose={() => setAddBill(false)}
+                      handleUpload={addBillCallback}
                       userAddress={searchUserAddress}
                     />
                   </Modal>
 
-                  <Typography variant='h4'>Bill of user</Typography>
+                  <Typography variant='h4'>Bill and Punish Ticket of user</Typography>
                   <Box display='flex' alignItems='center' my={1}>
                     <FormControl fullWidth>
                       <TextField
@@ -133,22 +134,22 @@ const Admin = () => {
                         <SearchRoundedIcon style={{ color: 'white' }} />
                       </CustomButton>
                     </Box>
-                    <CustomButton text={'New Bill'} handleClick={() => setAddRecord(true)} disabled={!userExist}>
+                    <CustomButton text={'Upload new Bill or Punish ticket'} handleClick={() => setAddBill(true)} disabled={!userExist}>
                       <CloudUploadRoundedIcon style={{ color: 'white' }} />
                     </CustomButton>
                   </Box>
 
-                  {userExist && records.length === 0 && (
+                  {userExist && bills.length === 0 && (
                     <Box display='flex' alignItems='center' justifyContent='center' my={5}>
-                      <Typography variant='h5'>The account has no bill yet</Typography>
+                      <Typography variant='h5'>The account has no bill or punish ticket yet</Typography>
                     </Box>
                   )}
 
-                  {userExist && records.length > 0 && (
+                  {userExist && bills.length > 0 && (
                     <Box display='flex' flexDirection='column' mt={3} mb={-2}>
-                      {records.map((record, index) => (
+                      {bills.map((bill, index) => (
                         <Box mb={2}>
-                          <Record key={index} record={record} />
+                          <Bill key={index} bill={bill} />
                         </Box>
                       ))}
                     </Box>

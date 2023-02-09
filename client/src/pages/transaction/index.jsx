@@ -46,7 +46,7 @@ const Transaction = () => {
                             </CustomButton>
                         </Box>
                         <Typography variant='h5' color='white'>
-                            Only Admin cann add User
+                            Only Admin can add User
                         </Typography>
                     </Box>
                 )
@@ -108,7 +108,7 @@ const Transaction = () => {
                     <img src = {thumbnail} style={{height:300}}/>
                     <Box mt={2} mb={5}>
                         <Typography variant='h4' color='white'>
-                            WELCOME TO TELECOM PAYMENT PAGE
+                            WELCOME TO TELECOM FEE PAYMENT PAGE
                         </Typography>
                     </Box>
                     <ActionSection />

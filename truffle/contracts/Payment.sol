@@ -2,7 +2,7 @@ pragma solidity >=0.4.22 <0.9.0;
 pragma experimental ABIEncoderV2;
 
 contract Payment {
-  struct Record {
+  struct Bill {
     string cid;
     string fileName; 
     address userId;
@@ -13,7 +13,7 @@ contract Payment {
   struct User {
     address id;
    
-    Record[] records;
+    Bill[] bills;
   }
 
   struct Admin {
@@ -34,10 +34,7 @@ contract Payment {
 
   event UserAdded(address userId);
   event AdminAdded(address adminId);
-  event RecordAdded(string cid, address userId, address adminId);
-
-  // modifiers
-
+  event BillAdded(string cid, address userId, address adminId);
   modifier senderExists {
     require(admins[msg.sender].id == msg.sender || users[msg.sender].id == msg.sender, "Sender does not exist");
     _;
@@ -53,13 +50,9 @@ contract Payment {
     _;
   }
 
-  // functions
-
   function addUser(address _userId) public senderIsAdmin {
     require(users[_userId].id != _userId, "This user already exists.");
     users[_userId].id = _userId;
-    
-    
     emit UserAdded(_userId);
   }
 
@@ -70,15 +63,15 @@ contract Payment {
     emit AdminAdded(msg.sender);
   }
 
-  function addRecord(string memory _cid, string memory _fileName, address _userId) public senderIsAdmin userExists(_userId) {
-    Record memory record = Record(_cid, _fileName, _userId, msg.sender, block.timestamp);
-    users[_userId].records.push(record);
+  function addBill(string memory _cid, string memory _fileName, address _userId) public senderIsAdmin userExists(_userId) {
+    Bill memory bill = Bill(_cid, _fileName, _userId, msg.sender, block.timestamp);
+    users[_userId].bills.push(bill);
 
-    emit RecordAdded(_cid, _userId, msg.sender);
+    emit BillAdded(_cid, _userId, msg.sender);
   } 
 
-  function getRecords(address _userId) public view senderExists userExists(_userId) returns (Record[] memory) {
-    return users[_userId].records;
+  function getBills(address _userId) public view senderExists userExists(_userId) returns (Bill[] memory) {
+    return users[_userId].bills;
   } 
 
   function getSenderRole() public view returns (string memory) {

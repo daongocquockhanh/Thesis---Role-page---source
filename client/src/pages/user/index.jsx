@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import {Box, Typography, Backdrop, CircularProgress, TextField, FormControl} from '@mui/material'
 import useEth from '../../contexts/EthContext/useEth'
 import Record from '../../components/Record'
+import Bill from '../../components/Bill'
 import CustomButton from '../../components/CustomButton'
 import { useNavigate } from 'react-router-dom'
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
@@ -12,26 +13,26 @@ const User = () => {
   } = useEth()
 
   const navigate = useNavigate()
-  const [records, setRecords] = useState([])
-  const [loadingRecords, setLoadingRecords] = useState(true)
+  const [bills, setBills] = useState([])
+  const [loadingBills, setLoadingBills] = useState(true)
 
   useEffect(() => {
-    const getRecords = async () => {
+    const getBills = async () => {
       try {
-        const records = await contract.methods.getRecords(accounts[0]).call({ from: accounts[0] })
-        setRecords(records)
-        setLoadingRecords(false)
+        const bills = await contract.methods.getBills(accounts[0]).call({ from: accounts[0] })
+        setBills(bills)
+        setLoadingBills(false)
       } catch (err) {
         console.error(err)
-        setLoadingRecords(false)
+        setLoadingBills(false)
       }
     }
-    getRecords()
+    getBills()
   })
 
 
 
-  if (loading || loadingRecords) {
+  if (loading || loadingBills) {
     return (
         <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={loading}>
           <CircularProgress color='inherit' />
@@ -93,17 +94,17 @@ const User = () => {
                         <Box display='flex' alignItems='left' justifyContent='left' my={5}>
                           <Typography variant='h4'>Bills</Typography>
                         </Box>
-                        {records.length === 0 && (
+                        {bills.length === 0 && (
                             <Box display='flex' alignItems='right' justifyContent='right' my={5}>
                               <Typography variant='h5'>No bills found</Typography>
                             </Box>
                         )}
 
-                        {records.length > 0 && (
+                        {bills.length > 0 && (
                             <Box display='flex' flexDirection='column' mt={3} mb={-2}>
-                              {records.map((record, index) => (
+                              {bills.map((bill, index) => (
                                   <Box mb={2}>
-                                    <Record key={index} record={record} />
+                                    <Bill key={index} bill={bill} />
                                   </Box>
                               ))}
                             </Box>

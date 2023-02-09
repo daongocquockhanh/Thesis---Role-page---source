@@ -52,7 +52,7 @@ const UpdateBillModal = ({ handleClose, handleUpload, userAddress }) => {
           </IconButton>
         </Box>
         <Box display='flex' flexDirection='column' my={1}>
-          <Typography variant='h4'>Upload Bill</Typography>
+          <Typography variant='h4'>Upload Bill & Punish Ticket</Typography>
           <Box my={2}>
             <DropzoneAreaBase
               onAdd={fileObjs => handleFileChange(fileObjs[0])}
