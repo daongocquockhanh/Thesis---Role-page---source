@@ -1,4 +1,4 @@
-import { Box, Divider, FormControl, Modal, TextField, Typography, Backdrop, CircularProgress } from '@mui/material'
+import { Box, Divider, FormControl, Modal, TextField, Typography, Backdrop, CircularProgress, Grid } from '@mui/material'
 import React, { useCallback } from 'react'
 import { useState } from 'react'
 import CustomButton from '../../components/CustomButton'
@@ -55,149 +55,160 @@ const Admin = () => {
     }
   }
   const addBillCallback = useCallback(
-    async (buffer, fileName, userAddress) => {
-      if (!userAddress) {
-        setAlert('No user entered', 'error')
-        return
-      }
-      try {
-        const res = await ipfs.add(buffer)
-        const ipfsHash = res[0].hash
-        if (ipfsHash) {
-          await contract.methods.addBill(ipfsHash, fileName, userAddress).send({ from: accounts[0] })
-          setAlert('New bill uploaded', 'success')
-          setAddBill(false)
-
-          // refresh records
-          const bills = await contract.methods.getBills(userAddress).call({ from: accounts[0] })
-          setBills(bills)
+      async (buffer, fileName, userAddress) => {
+        if (!userAddress) {
+          setAlert('No user entered', 'error')
+          return
         }
-      } catch (err) {
-        setAlert('Bill upload failed', 'error')
-        console.error(err)
-      }
-    },
-    [addUserAddress, accounts, contract]
+        try {
+          const res = await ipfs.add(buffer)
+          const ipfsHash = res[0].hash
+          if (ipfsHash) {
+            await contract.methods.addBill(ipfsHash, fileName, userAddress).send({ from: accounts[0] })
+            setAlert('New bill uploaded', 'success')
+            setAddBill(false)
+
+            // refresh records
+            const bills = await contract.methods.getBills(userAddress).call({ from: accounts[0] })
+            setBills(bills)
+          }
+        } catch (err) {
+          setAlert('Bill upload failed', 'error')
+          console.error(err)
+        }
+      },
+      [addUserAddress, accounts, contract]
   )
 
   if (loading) {
     return (
-      <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={loading}>
-        <CircularProgress color='inherit' />
-      </Backdrop>
+        <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={loading}>
+          <CircularProgress color='inherit' />
+        </Backdrop>
     )
   } else {
     return (
-      <Box display='flex' justifyContent='center' width='100vw'>
-        <Box width='60%' my={5}>
-          {!accounts ? (
-            <Box display='flex' justifyContent='center'>
-              <Typography variant='h6'>Connect to your wallet and refresh the page</Typography>
-            </Box>
-          ) : (
-            <>
-              {role === 'unknown' && (
+        <Box   width='100vw'>
+          <Box width='50%' my={4}>
+            {!accounts ? (
                 <Box display='flex' justifyContent='center'>
-                  <Typography variant='h5'>You're not registered, please go to home page</Typography>
+                  <Typography variant='h6'>Connect to your wallet and refresh the page</Typography>
                 </Box>
-              )}
-              {role === 'user' && (
-                <Box display='flex' justifyContent='center'>
-                  <Typography variant='h5'>Only admin can access this page</Typography>
-                </Box>
-              )}
-              {role === 'admin' && (
+            ) : (
                 <>
-                  <Modal open={addBill} onClose={() => setAddBill(false)}>
-                    <UpdateBillModal
-                      handleClose={() => setAddBill(false)}
-                      handleUpload={addBillCallback}
-                      userAddress={searchUserAddress}
-                    />
-                  </Modal>
-
-                  <Typography variant='h4'>Bill and Punish Ticket of user</Typography>
-                  <Box display='flex' alignItems='center' my={1}>
-                    <FormControl fullWidth>
-                      <TextField
-                        variant='outlined'
-                        placeholder='Enter user public key'
-                        value={searchUserAddress}
-                        onChange={e => setSearchUserAddress(e.target.value)}
-                        InputProps={{ style: { fontSize: '15px' } }}
-                        InputLabelProps={{ style: { fontSize: '15px' } }}
-                        size='small'
-                      />
-                    </FormControl>
-                    <Box mx={2}>
-                      <CustomButton text={'Search'} handleClick={() => searchUser()}>
-                        <SearchRoundedIcon style={{ color: 'white' }} />
-                      </CustomButton>
-                    </Box>
-                    <CustomButton text={'Upload new Bill or Punish ticket'} handleClick={() => setAddBill(true)} disabled={!userExist}>
-                      <CloudUploadRoundedIcon style={{ color: 'white' }} />
-                    </CustomButton>
-                  </Box>
-
-                  {userExist && bills.length === 0 && (
-                    <Box display='flex' alignItems='center' justifyContent='center' my={5}>
-                      <Typography variant='h5'>The account has no bill or punish ticket yet</Typography>
-                    </Box>
+                  {role === 'unknown' && (
+                      <Box display='flex' justifyContent='center'>
+                        <Typography variant='h5'>You're not registered, please go to home page</Typography>
+                      </Box>
                   )}
+                  {role === 'user' && (
+                      <Box display='flex' justifyContent='center'>
+                        <Typography variant='h5'>Only admin can access this page</Typography>
+                      </Box>
+                  )}
+                  {role === 'admin' && (
+                      <>
+                        <Modal open={addBill} onClose={() => setAddBill(false)}>
+                          <UpdateBillModal
+                              handleClose={() => setAddBill(false)}
+                              handleUpload={addBillCallback}
+                              userAddress={searchUserAddress}
+                          />
+                        </Modal>
 
-                  {userExist && bills.length > 0 && (
-                    <Box display='flex' flexDirection='column' mt={3} mb={-2}>
-                      {bills.map((bill, index) => (
-                        <Box mb={2}>
-                          <Bill key={index} bill={bill} />
+
+                        <Box display='flex' flexDirection='column' mt={6} mb={2} sx={{ flexGrow: 2 }}>
+                          <Grid  container spacing={1}>
+                            <Grid typography item xs={6} md={8}>
+                              <Typography variant='h4' justifyContent={'center'}>Bill and Punish Ticket of user</Typography>
+                              <Box display='flex' alignItems='center' my={5}>
+                                <FormControl size={'large'} >
+                                  <TextField
+                                      variant='outlined'
+                                      placeholder='Enter user public key'
+                                      value={searchUserAddress}
+                                      onChange={e => setSearchUserAddress(e.target.value)}
+                                      InputProps={{ style: { fontSize: '15px' } }}
+                                      InputLabelProps={{ style: { fontSize: '15px' } }}
+                                      size='medium'
+                                  />
+                                </FormControl>
+                                <Box mx={2}>
+                                  <CustomButton text={'Search'} handleClick={() => searchUser()}>
+                                    <SearchRoundedIcon style={{ color: 'white' }} />
+                                  </CustomButton>
+                                </Box>
+                                <CustomButton text={'Upload new Bill or Punish ticket'} handleClick={() => setAddBill(true)} disabled={!userExist}>
+                                  <CloudUploadRoundedIcon style={{ color: 'white' }} />
+                                </CustomButton>
+                              </Box>
+                            </Grid>
+                            <Grid typography item xs={8} md={4}>
+                              <Typography variant='h4'>Add users</Typography>
+                              <Box   display='flex'   my={5}>
+                                <FormControl fullWidth >
+                                  <TextField
+                                      variant='outlined'
+                                      placeholder='Enter user public key'
+                                      value={addUserAddress}
+                                      onChange={e => setAddUserAddress(e.target.value)}
+                                      InputProps={{ style: { fontSize: '15px' } }}
+                                      InputLabelProps={{ style: { fontSize: '15px' } }}
+                                      size='medium'
+                                  />
+                                </FormControl>
+
+                                <Box mx={2} md={2}>
+                                  <CustomButton  text={'Register'} handleClick={() => registerUser()}>
+                                    <PersonAddAlt1RoundedIcon style={{ color: 'white' }} />
+                                  </CustomButton>
+                                </Box>
+                              </Box>
+                            </Grid>
+                          </Grid>
                         </Box>
-                      ))}
-                    </Box>
+
+
+
+                        {userExist && bills.length === 0 && (
+                            <Box display='flex' alignItems='center' justifyContent='center' my={5}>
+                              <Typography variant='h5'>The account has no bill or punish ticket yet</Typography>
+                            </Box>
+                        )}
+
+                        {userExist && bills.length > 0 && (
+                            <Box display='left' flexDirection='column' mt={1} mb={-2}>
+                              {bills.map((bill, index) => (
+                                  <Box mb={2}>
+                                    <Bill key={index} bill={bill} />
+                                  </Box>
+                              ))}
+                            </Box>
+                        )}
+
+                        <Box mt={6} mb={4}>
+                          {/*<Divider />*/}
+                        </Box>
+
+                      </>
                   )}
-
-                  <Box mt={6} mb={4}>
-                    <Divider />
-                  </Box>
-
-                  <Typography variant='h4'>Add user</Typography>
-                  <Box display='flex' alignItems='center' my={1}>
-                    <FormControl fullWidth>
-                      <TextField
-                        variant='outlined'
-                        placeholder='Enter user public key'
-                        value={addUserAddress}
-                        onChange={e => setAddUserAddress(e.target.value)}
-                        InputProps={{ style: { fontSize: '15px' } }}
-                        InputLabelProps={{ style: { fontSize: '15px' } }}
-                        size='small'
-                      />
-                    </FormControl>
-                    
-                    <Box mx={3}>
-                      <CustomButton text={'Register'} handleClick={() => registerUser()}>
-                        <PersonAddAlt1RoundedIcon style={{ color: 'white' }} />
-                      </CustomButton>
-                    </Box>
-                  </Box>
                 </>
-              )}
-            </>
-          )}
-          <Box mt={6} mb={4}>
-            <Divider />
-          </Box>
+            )}
+            <Box mt={6} mb={4}>
+              <Divider />
+            </Box>
 
-          <Typography variant='h4'>Go to Social page</Typography>
-          <Typography variant='h6'>This page will stage all users comment about the service</Typography>
+            <Typography variant='h4'>Go to Social page</Typography>
+            <Typography variant='h6'>This page will stage all users comment about the service</Typography>
             <FormControl fullWidth>
 
-                <CustomButton text = "Go to Social page" link ="https://krypty-daongocquockhanh.vercel.app" >
-                    <FmdGoodIcon style={{ color: 'white' }} />
-                </CustomButton>
+              <CustomButton text = "Go to Social page" link ="https://krypty-daongocquockhanh.vercel.app" >
+                <FmdGoodIcon style={{ color: 'white' }} />
+              </CustomButton>
 
             </FormControl>
+          </Box>
         </Box>
-      </Box>
     )
   }
 }

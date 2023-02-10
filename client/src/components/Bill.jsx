@@ -12,17 +12,17 @@ const Bill = ({ bill }) => {
 
     return (
         <Card>
-            <CardContent>
-                <Grid container spacing={2}>
+            <CardContent >
+                <Grid container spacing={0}>
                     <Grid item xs={1}>
-                        <AttachMoneyIcon style={{ fontSize: 50, color: grey[700] }} />
+                        <AttachMoneyIcon style={{ fontSize: 40, color: grey[700] }} />
                     </Grid>
-                    <Grid item xs={2}>
-                        <Box display='flex' flexDirection='column'>
+                    <Grid item xs={3}>
+                        <Box display='left' flexDirection='column'>
                             <Typography variant='h6' color={grey[600]}>
                                 Name of file
                             </Typography>
-                            <Typography style={{ fontSize: 14 , textAlign: 'left'}}  variant='h6'>{name}</Typography>
+                            <Typography style={{ fontSize: 12 , textAlign: 'left'}}  variant='h6'>{name}</Typography>
                         </Box>
                     </Grid>
                     <Grid item xs={5}>

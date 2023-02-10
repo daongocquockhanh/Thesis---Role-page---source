@@ -15,7 +15,7 @@ const HeaderAppBar = () => {
   return (
     <AppBar position='static' style={{ backgroundColor: 'grey' }}>
       <Toolbar>
-        <Box display='flex' justifyContent='space-between' alignItems='center' width='100%'>
+        <Box display='flex' justifyContent='space-left' alignItems='left' width='100%'>
           <a href='/'>
             <ArrowBackIcon style={{ color: deepPurple[700], fontSize: '22px' }} />
           </a>
